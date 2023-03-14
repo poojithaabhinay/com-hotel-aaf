@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    parameters{
+        choice(name: 'Environment',choices: [ 'QA', 'UAT'],description: 'Passing the Environment')
+        choice(name:'ExecutionType',choices:['Local','Remote'],description:'Passing the ExecutionType')
+        choice(name :'Browser',choices:['CH','FF','ED'],description:'Passing the Browser')
+        choice (name:'ThreadCount',choices:['1','2','3'],description:'Passing the ThreadCount')
+        text(name: 'RemoteExecutionGrid', description: 'Passing the RemoteExecutionGrid',defaultValue:"https://oauth-poojiqa54-82871:55ae1559-d8c8-45a9-b4a3-e5bdd2ae7b3e@ondemand.us-west-1.saucelabs.com:443/wd/hub")
+        text(name:'tags',description:'Enter the tags',defaultValue:"@UI")
+    }
+    tools {
+        maven "mymaven"
+    }
+    stages {
+        stage('Compile and Clean') {
+            steps {
+                bat "mvn clean compile"
+            }
+        }
+        stage ('UITest'){
+            steps {
+                echo "Execution Environment is : ${params.Environment}"
+                echo "Execution Browser is : ${params.Browser}"
+              //  bat "mvn test"
+                bat "mvn test -DEnvironment=${params.Environment} -DBrowser=${params.Browser} -DExecutionType=${params.ExecutionType} -DRemoteExecutionGrid=${params.RemoteExecutionGrid} -Dcucumber.filter.tags=${params.tags} -Dtestng.threadcount=${params.ThreadCount}"
+            }
+        }
+        stage ('Cucumber Reports'){
+            steps {
+               cucumber buildStatus: "UNSTABLE",
+               fileIncludePattern: "**/cucumberReport/cucumber.json",
+               jsonReportDirectory: 'target'
+            }
+        }
+    }
+}
