@@ -18,16 +18,21 @@ public class SelectHotel extends Page{
     }
     @FindBy(how = How.XPATH, using = ("//*[@id='location_0']"))
     WebElement location;
-    @FindBy(how = How.XPATH, using = ("//input[@name ='arr_date_0']"))
-    WebElement checkin;
+    @FindBy(how = How.XPATH, using = ("//input[@name='dep_date_0']"))
+    WebElement checkout;
+    @FindBy(how = How.XPATH, using = ("//input[@name='rooms_0']"))
+    WebElement room;
     public String getTextFromLocation(){
 
         return location.getText();
     }
-    public String getTextFromCheckInDate(){
+    public String getTextFromCheckOutDate(){
 
-        return checkin.getText();
+        return checkout.getText();
     }
+    public String getTextFromRoom(){
 
+        return room.getText();
+    }
 
 }

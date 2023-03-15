@@ -78,7 +78,9 @@ public class Hrms {
         if (ExecutionType.equals("Local")) {
             if (Browser.equals("CH")) {
                 WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--remote-allow-origins=*");
+                driver = new ChromeDriver(options);
             } else if (Browser.equals("FF")) {
                 WebDriverManager.firefoxdriver().setup();
                 driver = new FirefoxDriver();
@@ -171,8 +173,15 @@ public class Hrms {
 
     }
 
-    @Then("Verify the dates is displayed in select Hotel page")
-    public void verify_the_dates_is_displayed_in_select_Hotel_page() {
+    @Then("Verify the checkout date {string} is displayed in select hotel page")
+    public void verify_the_checkout_date_is_displayed_in_select_hotel_page(String exp) {
+        String actual = selectHotel.getTextFromCheckOutDate();
+        selectHotel.verify(exp,actual);
 
+    }
+    @Then("Verify the number of rooms {string} is displayed in select hotel page")
+    public void verify_the_number_of_rooms_is_displayed_in_select_hotel_page(String expectedWelcomeText) {
+        String actualWelcomeText =selectHotel.getTextFromRoom();
+        selectHotel.verify(expectedWelcomeText,actualWelcomeText);
     }
 }

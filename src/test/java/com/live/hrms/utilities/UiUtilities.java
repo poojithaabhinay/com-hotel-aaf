@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 public class UiUtilities {
     org.apache.log4j.Logger log = LoggerClass.getThreadLogger(Thread.currentThread().getName().toString(), "Ws001");
@@ -36,7 +37,7 @@ public class UiUtilities {
 
     }
 
-    public static void verify(String expectedWelcomeText, String actualWelcomeText){
+    public  void verify(String expectedWelcomeText, String actualWelcomeText){
         if(expectedWelcomeText.equals(actualWelcomeText)){
             String results = "PASS::: Expected and Actual Values are matching for Welcome Text. Expected Text :'" + expectedWelcomeText + "' and Actual Text '" + expectedWelcomeText + "'" ;
             log.info(results);
@@ -48,5 +49,8 @@ public class UiUtilities {
         }
         Assert.assertEquals(actualWelcomeText,expectedWelcomeText);
     }
+
+
+
 }
 
