@@ -147,3 +147,61 @@
     </build>
 </project>
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public class HashGenerator {
+
+    // Method to generate HMAC SHA256 hash and format it as required
+    public static String generateHash(String message, byte[] secretKey) throws Exception {
+        // Create an HMAC SHA256 instance
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "HmacSHA256");
+        sha256_HMAC.init(secretKeySpec);
+
+        // Generate the hash
+        byte[] hashBytes = sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8));
+
+        // Convert hash to Base64 string
+        String hashInBase64 = Base64.getEncoder().encodeToString(hashBytes);
+
+        // Replace special characters
+        hashInBase64 = hashInBase64.replace("/", "_").replace("+", "-").replace("=", "");
+
+        return hashInBase64;
+    }
+
+    // Method to generate the Mac ID
+    public static String getMacID(byte[] decodedSecret, String version, String appID) throws Exception {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Form the message
+        String message = appID + "-" + version + "-" + timestamp;
+
+        // Generate and return the hash
+        return generateHash(message, decodedSecret);
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Replace with your values
+            String appID = ""; // Your App ID
+            String secret = ""; // Your Base64-encoded secret
+            String version = ""; // Your version string
+
+            // Decode the Base64-encoded secret
+            byte[] decodedSecret = Base64.getDecoder().decode(secret);
+
+            // Generate the Mac ID
+            String mac = getMacID(decodedSecret, version, appID);
+
+            // Output the Mac ID
+            System.out.println("Generated Mac ID: " + mac);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
